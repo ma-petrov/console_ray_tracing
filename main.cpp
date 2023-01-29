@@ -13,7 +13,7 @@ queue<char> input_queue;
 vec3 ro = vec3(-10, 0, 0);
 float camera_rotation = 0;
 
-vec3 light = norm(vec3(-1, 1, -2));
+vec3 light = norm(vec3(-0.5, 0.5, 1));
 
 char render_pixel(vec2 uv, vec3 ro, vec3 rd) {
     float diff = 0;
@@ -46,6 +46,7 @@ char render_pixel(vec2 uv, vec3 ro, vec3 rd) {
 }
 
 void render(char** frame) {
+    light = rotateZ(light, 0.01);
     for (int i = 0; i < HEIGHT; i++) {
         for (int j = 0; j < WIDTH; j++) {
             vec2 uv = calculate_uv(j, i);
