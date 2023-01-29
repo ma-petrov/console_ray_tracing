@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+g++ -o main main.cpp
+# ./main
