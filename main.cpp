@@ -13,7 +13,7 @@ queue<char> input_queue;
 vec3 ro = vec3(-10, 0, 0);
 float camera_rotation = 0;
 
-vec3 light = norm(vec3(-0.5, 0.5, 1));
+vec3 light = norm(vec3(-0.5, 0.5, -0.5));
 
 char render_pixel(vec2 uv, vec3 ro, vec3 rd) {
     float diff = 0;
@@ -39,14 +39,14 @@ char render_pixel(vec2 uv, vec3 ro, vec3 rd) {
     }
 
     if (min_it < MAX_IT) {
-        diff = clamp(dot_product(n, light) * 20, 1, COLOR_SIZE);
+        diff = clamp(dot_product(n, light) * 20, 1, COLOR_SIZE - 1);
         return COLOR[(int)diff];
     }
     else return COLOR[0];
 }
 
 void render(char** frame) {
-    light = rotateZ(light, 0.01);
+    // light = rotateZ(light, 0.01);
     for (int i = 0; i < HEIGHT; i++) {
         for (int j = 0; j < WIDTH; j++) {
             vec2 uv = calculate_uv(j, i);
@@ -76,8 +76,8 @@ void read_input() {
 void move_camera(queue<char>* input_queue) {
     if (!input_queue->empty()) {
         char c = input_queue->front();
-        if (c == 'w') ro = ro - rotateZ(norm(ro), camera_rotation);
-        if (c == 's') ro = ro + rotateZ(norm(ro), camera_rotation);
+        if (c == 'w') ro = ro + rotateZ(vec3(1, 0, 0), camera_rotation);
+        if (c == 's') ro = ro - rotateZ(vec3(1, 0, 0), camera_rotation);
         if (c == 'a') camera_rotation -= 0.01;
         if (c == 'd') camera_rotation += 0.01;
         input_queue->pop();
@@ -100,4 +100,11 @@ void start_rendering() {
 int main() {
     thread start_rendering_thread(start_rendering);
     read_input();
+    // vec3 ro = vec3(1, 0, 0); 
+    // for (int i = 0; i < 10; i++) {
+    //     vec3 v = rotateZ(vec3(1, 0, 0), i);
+    //     printf("delta: %f, %f, %f\n", v.x, v.y, v.z);
+    //     ro = ro + v;
+    //     printf("ro: %f, %f, %f\n", ro.x, ro.y, ro.z);
+    // }
 }

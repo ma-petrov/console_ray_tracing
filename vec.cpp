@@ -19,10 +19,10 @@ struct vec3 {
     vec3(float x_, vec2 uv) : x(x_), y(uv.x), z(uv.y) {}
     vec3(vec2 uv, float z_) : x(uv.x), y(uv.y), z(z_) {}
 
-    vec3 operator+ (vec3 const & other) {return vec3(x + other.x, y + other.y, y + other.y);}
-    vec3 operator- (vec3 const & other) {return vec3(x - other.x, y - other.y, y - other.y);}
-    vec3 operator* (vec3 const & other) {return vec3(x * other.x, y * other.y, y * other.y);}
-    vec3 operator/ (vec3 const & other) {return vec3(x / other.x, y / other.y, y / other.y);}
+    vec3 operator+ (vec3 const & other) {return vec3(x + other.x, y + other.y, z + other.z);}
+    vec3 operator- (vec3 const & other) {return vec3(x - other.x, y - other.y, z - other.z);}
+    vec3 operator* (vec3 const & other) {return vec3(x * other.x, y * other.y, z * other.z);}
+    vec3 operator/ (vec3 const & other) {return vec3(x / other.x, y / other.y, z / other.z);}
     vec3 operator- () {return vec3(-x, -y, -z);}
 };
 
