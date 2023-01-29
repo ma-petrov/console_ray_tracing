@@ -9,6 +9,7 @@
 
 using namespace std;
 
+bool is_quit = false;
 queue<char> input_queue;
 vec3 ro = vec3(-10, 0, 0);
 float camera_rotation = 0;
@@ -34,8 +35,10 @@ char render_pixel(vec2 uv, vec3 ro, vec3 rd) {
     intersection = sphere(ro - sphere_pos, rd, 1);
     if (intersection.x > 0) {
         vec3 it_point = ro - sphere_pos + rd * intersection.x;
-        min_it = intersection.x;
-        n = norm(it_point);
+        if (intersection.x < min_it) {
+            min_it = intersection.x;
+            n = norm(it_point);
+        }
     }
 
     if (min_it < MAX_IT) {
@@ -59,15 +62,20 @@ void render(char** frame) {
 
 void display(char** frame) {
     printf("\x1B[2J\x1B[H");
-    puts("camera position:");
-    printf("x: %f, y: %f, z: %f\n", ro.x, ro.y, ro.z);
-    for (int i = 0; i < HEIGHT; i++) puts(frame[i]);
+    if (is_quit) {
+        puts("\n\n\n\n\n\n            quitting, press any key");
+    }
+    else {
+        puts("camera position:");
+        printf("x: %f, y: %f, z: %f\n", ro.x, ro.y, ro.z);
+        for (int i = 0; i < HEIGHT; i++) puts(frame[i]);
+    }
 }
 
 void read_input() {
     int i = 0;
     char c;
-    while (true) {
+    while (!is_quit) {
         c = getkey();
         input_queue.push(c);
     }
@@ -78,8 +86,11 @@ void move_camera(queue<char>* input_queue) {
         char c = input_queue->front();
         if (c == 'w') ro = ro + rotateZ(vec3(1, 0, 0), camera_rotation);
         if (c == 's') ro = ro - rotateZ(vec3(1, 0, 0), camera_rotation);
-        if (c == 'a') camera_rotation -= 0.01;
-        if (c == 'd') camera_rotation += 0.01;
+        if (c == 'a') ro = ro - rotateZ(vec3(1, 0, 0), camera_rotation + M_PI/2);
+        if (c == 'd') ro = ro + rotateZ(vec3(1, 0, 0), camera_rotation + M_PI/2);
+        if (c == 'j') camera_rotation -= 0.05;
+        if (c == 'k') camera_rotation += 0.05;
+        if (c == '\x1b') is_quit = true;
         input_queue->pop();
     }
 }
@@ -88,7 +99,7 @@ void start_rendering() {
     char** frame = new char*[HEIGHT];
     for (int i = 0; i < HEIGHT; i++) frame[i] = new char[WIDTH];
 
-    while (true) {
+    while (!is_quit) {
         move_camera(&input_queue);
         usleep(10000);
         render(frame);
@@ -100,11 +111,4 @@ void start_rendering() {
 int main() {
     thread start_rendering_thread(start_rendering);
     read_input();
-    // vec3 ro = vec3(1, 0, 0); 
-    // for (int i = 0; i < 10; i++) {
-    //     vec3 v = rotateZ(vec3(1, 0, 0), i);
-    //     printf("delta: %f, %f, %f\n", v.x, v.y, v.z);
-    //     ro = ro + v;
-    //     printf("ro: %f, %f, %f\n", ro.x, ro.y, ro.z);
-    // }
 }
