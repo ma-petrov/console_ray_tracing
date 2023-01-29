@@ -1,9 +1,9 @@
-# What it is?
+### What it is?
 It is begin of console ray-tracing game.
 Now you can only move camera with "wasd" keys.
 
-# For what?
+### For what?
 I dont know...
 
-# Run
+### Run
 build and run with ./run command
